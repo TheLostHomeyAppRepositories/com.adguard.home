@@ -1,0 +1,33 @@
+{
+  "name": {
+    "en": "AdGuard Home"
+  },
+  "class": "other",
+  "capabilities": [
+    "protection",
+    "total_queries",
+    "blocked_filtering",
+    "blocked_adult",
+    "blocked_malware",
+    "blocked_safesearch"
+  ],
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "ip"
+    },
+    {
+      "id": "login"
+    }
+  ]
+}

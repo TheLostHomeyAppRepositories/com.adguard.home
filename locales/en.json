@@ -1,0 +1,14 @@
+{
+  "pair": {
+    "user": "Username",
+    "pass": "Password",
+    "nouser": "Enter a username",
+    "nopass": "Enter a password",
+    "error": "Invalid credentials",
+    "noinput": "Enter an IP address",
+    "save": "Save",
+    "saving": "Saving",
+    "ip": "IP address",
+    "failed": "Server unreachable"
+  }
+}

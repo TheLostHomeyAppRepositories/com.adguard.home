@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Total requests",
+    "nl": "Totale verzoeken"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "icon": "/assets/total.svg"
+}

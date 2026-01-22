@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .error {
+        color: red;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend">AdGuard Home</legend>
+      <br>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="user" data-i18n="pair.user">Username</label>
+        <input class="homey-form-input" id="user" type="text" value="" />
+        <p id="nouser" style="display: none;" class="error" data-i18n="pair.nouser"></p>
+      </div>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="password" data-i18n="pair.pass">Password</label>
+        <input class="homey-form-input" id="password" type="password" value="" />
+        <p id="nopassword" style="display: none;" class="error" data-i18n="pair.nopass"></p>
+      </div>
+    </fieldset>
+    <p id="failed2" style="display: none;" class="error" data-i18n="pair.error">Invalid credentials</p>
+    <button id="savebtn" class="homey-button-primary-full" data-i18n="settings.save">Save</button>
+    <script type="text/javascript">
+      const userElement = document.getElementById('user');
+      const passwordElement = document.getElementById('password');
+      const failedElement = document.getElementById('failed2');
+      const noUserElement = document.getElementById('nouser');
+      const noPasswordElement = document.getElementById('nopassword');
+      const saveBtn = document.getElementById('savebtn');
+        saveBtn.addEventListener("click", function (e) {
+          console.log("Save button clicked");
+          failedElement.style.display = 'none';
+          noUserElement.style.display = 'none';
+          noPasswordElement.style.display = 'none';
+          if (!userElement.value) {
+            noUserElement.style.display = 'block';
+            setSave();
+            return;
+          }
+          if (!passwordElement.value) {
+            noPasswordElement.style.display = 'block';
+            setSave();
+            return;
+          }
+          console.log("Emitting login event");
+          setSaving();
+          const user = userElement.value;
+          const pass = passwordElement.value;
+          Homey.emit("login", { user: user, pass: pass }).then(function (result) {
+            if (result === false) {
+              failedElement.style.display = 'block';
+              setSave();
+            } else {
+              Homey.addDevice({
+                data: {
+                  "ip": result.ip,
+                },
+                store: {
+                  "ip": result.ip,
+                  "user": result.user,
+                  "pass": result.pass
+                },
+                name: result.ip
+              }, (err, result) => {
+                if (err) {
+                  console.error(err);
+                  if (err.message && err.message.includes('already added')) {
+                    saveBtn.className = 'homey-button-primary-full';
+                    saveBtn.textContent = 'Login';
+                    duplicatedevice.style.display = 'block';
+                  } else {
+                    saveBtn.className = 'homey-button-primary-full';
+                    saveBtn.textContent = 'Login';
+                    unexpectederror.style.display = 'block';
+                  }
+                  return;
+                }
+                Homey.done();
+              });
+            }
+          });
+        }).catch(function (error) {
+          console.error("Error during login event:", error);
+          setSave();
+        });
+        function setSave() {
+          saveBtn.className = 'homey-button-primary-full';
+          saveBtn.textContent = Homey.__('pair.save');
+        }
+
+        function setSaving() {
+          saveBtn.className = 'homey-button-primary-full is-loading';
+          saveBtn.textContent = Homey.__('pair.saving');
+        }
+    </script>
+  </body>
+</html>

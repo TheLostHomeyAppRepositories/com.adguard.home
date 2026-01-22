@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Blocked SafeSearch",
+    "nl": "Geblokkeerd SafeSearch"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "icon": "/assets/safesearch.svg"
+}

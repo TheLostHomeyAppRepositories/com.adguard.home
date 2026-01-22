@@ -1,0 +1,14 @@
+{
+    "pair": {
+        "user": "Gebruikersnaam",
+        "pass": "Wachtwoord",
+        "nouser": "Voer een gebruikersnaam in",
+        "nopass": "Voer een wachtwoord in",
+        "error": "Ongeldige inloggegevens",
+        "noinput": "Voer een IP-adres in",
+        "save": "Opslaan",
+        "saving": "Opslaan",
+        "ip": "IP-adres",
+        "failed": "Server onbereikbaar"
+    }
+}

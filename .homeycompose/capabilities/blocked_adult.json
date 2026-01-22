@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Blocked parental controls",
+    "nl": "Geblokkeerd ouderlijk toezicht"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "icon": "/assets/safesearch.svg"
+}

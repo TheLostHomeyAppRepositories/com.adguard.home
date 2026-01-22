@@ -1,0 +1,277 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.adguard.home",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "AdGuard Home"
+  },
+  "description": {
+    "en": "Protect your network against ads and trackers",
+    "nl": "Bescherm je netwerk tegen advertenties en trackers"
+  },
+  "category": [
+    "internet"
+  ],
+  "brandColor": "#67B279",
+  "source": "https://github.com/smarthomesven/homey-adguard-home",
+  "bugs": {
+    "url": "https://github.com/smarthomesven/homey-adguard-home/issues"
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Sven Serlier",
+    "email": "sven@dypodex.com"
+  },
+  "flow": {
+    "triggers": [
+      {
+        "id": "blocked_adult_changed",
+        "title": {
+          "en": "Blocked parental controls changed",
+          "nl": "Geblokkeerd ouderlijk toezicht veranderd"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "blocked_filtering_changed",
+        "title": {
+          "en": "Blocked filtering changed",
+          "nl": "Geblokkeerd filtering veranderd"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "blocked_malware_changed",
+        "title": {
+          "en": "Blocked malware/phishing changed",
+          "nl": "Geblokkeerd malware/phishing veranderd"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "total_queries_changed",
+        "title": {
+          "en": "Total requests changed",
+          "nl": "Totale verzoeken veranderd"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "blocked_safesearch_changed",
+        "title": {
+          "en": "Blocked SafeSearch changed",
+          "nl": "Geblokkeerd SafeSearch veranderd"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "protection_enabled",
+        "title": {
+          "en": "Filtering enabled",
+          "nl": "Filtering ingeschakeld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "protection_disabled",
+        "title": {
+          "en": "Filtering disabled",
+          "nl": "Filtering uitgeschakeld"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "enable_protection",
+        "title": {
+          "en": "Enable filtering",
+          "nl": "Filtering inschakelen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "disable_protection",
+        "title": {
+          "en": "Disable filtering",
+          "nl": "Filtering uitschakelen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "AdGuard Home"
+      },
+      "class": "other",
+      "capabilities": [
+        "protection",
+        "total_queries",
+        "blocked_filtering",
+        "blocked_adult",
+        "blocked_malware",
+        "blocked_safesearch"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/adguard/assets/images/small.png",
+        "large": "/drivers/adguard/assets/images/large.png",
+        "xlarge": "/drivers/adguard/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "ip"
+        },
+        {
+          "id": "login"
+        }
+      ],
+      "id": "adguard"
+    }
+  ],
+  "capabilities": {
+    "blocked_adult": {
+      "type": "number",
+      "title": {
+        "en": "Blocked parental controls",
+        "nl": "Geblokkeerd ouderlijk toezicht"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "icon": "/assets/safesearch.svg"
+    },
+    "blocked_filtering": {
+      "type": "number",
+      "title": {
+        "en": "Blocked filtering",
+        "nl": "Geblokkeerd filters"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "icon": "/assets/filtering.svg"
+    },
+    "blocked_malware": {
+      "type": "number",
+      "title": {
+        "en": "Blocked malware/phishing",
+        "nl": "Geblokkeerd malware/phishing"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "icon": "/assets/malware.svg"
+    },
+    "blocked_safesearch": {
+      "type": "number",
+      "title": {
+        "en": "Blocked SafeSearch",
+        "nl": "Geblokkeerd SafeSearch"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "icon": "/assets/safesearch.svg"
+    },
+    "protection": {
+      "type": "boolean",
+      "title": {
+        "en": "Filtering",
+        "nl": "Filtering"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "button",
+      "uiQuickAction": false,
+      "icon": "/assets/protection.svg"
+    },
+    "total_queries": {
+      "type": "number",
+      "title": {
+        "en": "Total requests",
+        "nl": "Totale verzoeken"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "icon": "/assets/total.svg"
+    }
+  }
+}

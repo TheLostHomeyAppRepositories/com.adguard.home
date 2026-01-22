@@ -1,0 +1,69 @@
+{
+  "triggers": [
+    {
+      "id": "blocked_adult_changed",
+      "title": {
+        "en": "Blocked parental controls changed",
+        "nl": "Geblokkeerd ouderlijk toezicht veranderd"
+      }
+    },
+    {
+      "id": "blocked_filtering_changed",
+      "title": {
+        "en": "Blocked filtering changed",
+        "nl": "Geblokkeerd filtering veranderd"
+      }
+    },
+    {
+      "id": "blocked_malware_changed",
+      "title": {
+        "en": "Blocked malware/phishing changed",
+        "nl": "Geblokkeerd malware/phishing veranderd"
+      }
+    },
+    {
+      "id": "total_queries_changed",
+      "title": {
+        "en": "Total requests changed",
+        "nl": "Totale verzoeken veranderd"
+      }
+    },
+    {
+      "id": "blocked_safesearch_changed",
+      "title": {
+        "en": "Blocked SafeSearch changed",
+        "nl": "Geblokkeerd SafeSearch veranderd"
+      }
+    },
+    {
+      "id": "protection_enabled",
+      "title": {
+        "en": "Filtering enabled",
+        "nl": "Filtering ingeschakeld"
+      }
+    },
+    {
+      "id": "protection_disabled",
+      "title": {
+        "en": "Filtering disabled",
+        "nl": "Filtering uitgeschakeld"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "enable_protection",
+      "title": {
+        "en": "Enable filtering",
+        "nl": "Filtering inschakelen"
+      }
+    },
+    {
+      "id": "disable_protection",
+      "title": {
+        "en": "Disable filtering",
+        "nl": "Filtering uitschakelen"
+      }
+    }
+  ]
+}
