@@ -17,6 +17,7 @@
     "internet"
   ],
   "brandColor": "#67B279",
+  "homeyCommunityTopicId": 149822,
   "source": "https://github.com/smarthomesven/homey-adguard-home",
   "bugs": {
     "url": "https://github.com/smarthomesven/homey-adguard-home/issues"
