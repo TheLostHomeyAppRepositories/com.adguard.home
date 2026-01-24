@@ -50,6 +50,15 @@
       }
     }
   ],
+  "conditions": [
+    {
+      "id": "protection_condition",
+      "title": {
+        "en": "Filtering is !{{enabled|disabled}}",
+        "nl": "Filtering is !{{ingeschakeld|uitgeschakeld}}"
+      }
+    }
+  ],
   "actions": [
     {
       "id": "enable_protection",

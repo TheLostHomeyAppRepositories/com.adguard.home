@@ -17,6 +17,10 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
         await this.setProtection(false);
       }
     });
+    const conditionCard = this.homey.flow.getConditionCard('protection_condition');
+    conditionCard.registerRunListener(async (args, state) => {
+      return await this.getCapabilityValue('protection');
+    });
     const enableCard = this.homey.flow.getActionCard('enable_protection');
     enableCard.registerRunListener(async (args, state) => {
       await this.setProtection(true);

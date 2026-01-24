@@ -134,6 +134,22 @@
         ]
       }
     ],
+    "conditions": [
+      {
+        "id": "protection_condition",
+        "title": {
+          "en": "Filtering is !{{enabled|disabled}}",
+          "nl": "Filtering is !{{ingeschakeld|uitgeschakeld}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      }
+    ],
     "actions": [
       {
         "id": "enable_protection",
