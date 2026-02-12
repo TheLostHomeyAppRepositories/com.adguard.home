@@ -60,63 +60,67 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
   }
 
   async pollAdguard() {
-    const ip = this.getStoreValue('ip');
-    const user = this.getStoreValue('user');
-    const pass = this.getStoreValue('pass');
-    const basicAuth = Buffer.from(`${user}:${pass}`).toString(`base64`);
     try {
-      const response = await axios.get(`http://${ip}/control/status`, {
-        headers: {
-          'Authorization': `Basic ${basicAuth}`
-        }
-      });
-      const isEnabled = response.data.protection_enabled;
-      this.log('Polled protection status:', isEnabled);
-      if (this._firstRunCompleted === true) {
-        if (this._oldProtectionStatus !== isEnabled) {
-          if (isEnabled) {
-            this.driver.triggerFlow('protection_enabled', this, {}, {});
-          } else {
-            this.driver.triggerFlow('protection_disabled', this, {}, {});
+      const ip = this.getStoreValue('ip');
+      const user = this.getStoreValue('user');
+      const pass = this.getStoreValue('pass');
+      const basicAuth = Buffer.from(`${user}:${pass}`).toString(`base64`);
+      try {
+        const response = await axios.get(`http://${ip}/control/status`, {
+          headers: {
+            'Authorization': `Basic ${basicAuth}`
+          }
+        });
+        const isEnabled = response.data.protection_enabled;
+        this.log('Polled protection status:', isEnabled);
+        if (this._firstRunCompleted === true) {
+          if (this._oldProtectionStatus !== isEnabled) {
+            if (isEnabled) {
+              this.driver.triggerFlow('protection_enabled', this, {}, {});
+            } else {
+              this.driver.triggerFlow('protection_disabled', this, {}, {});
+            }
           }
         }
+        this._oldProtectionStatus = isEnabled;
+        this.log('Setting protection capability to:', isEnabled);
+        this.setCapabilityValue("protection", isEnabled);
+        this._firstRunCompleted = true;
+      } catch (error) {
+        this.error('Error polling AdGuard Home:', error.message);
       }
-      this._oldProtectionStatus = isEnabled;
-      this.log('Setting protection capability to:', isEnabled);
-      this.setCapabilityValue("protection", isEnabled);
-      this._firstRunCompleted = true;
-    } catch (error) {
-      this.error('Error polling AdGuard Home:', error.message);
-    }
-    try {
-      const response = await axios.get(`http://${ip}/control/stats`, {
-        headers: {
-          'Authorization': `Basic ${basicAuth}`
+      try {
+        const response = await axios.get(`http://${ip}/control/stats`, {
+          headers: {
+            'Authorization': `Basic ${basicAuth}`
+          }
+        });
+        const data = response.data;
+        const allQueries = data.num_dns_queries;
+        const blockedFilters = data.num_blocked_filtering;
+        const blockedAdult = data.num_replaced_parental;
+        const blockedSafeSearch = data.num_replaced_safesearch;
+        const blockedMalware = data.num_replaced_safebrowsing;
+        if (allQueries) {
+          this.setCapabilityValue("total_queries",allQueries);
         }
-      });
-      const data = response.data;
-      const allQueries = data.num_dns_queries;
-      const blockedFilters = data.num_blocked_filtering;
-      const blockedAdult = data.num_replaced_parental;
-      const blockedSafeSearch = data.num_replaced_safesearch;
-      const blockedMalware = data.num_replaced_safebrowsing;
-      if (allQueries) {
-        this.setCapabilityValue("total_queries",allQueries);
-      }
-      if (blockedFilters) {
-        this.setCapabilityValue("blocked_filtering",blockedFilters);
-      }
-      if (blockedAdult) {
-        this.setCapabilityValue("blocked_adult",blockedAdult);
-      }
-      if (blockedSafeSearch) {
-        this.setCapabilityValue("blocked_safesearch",blockedSafeSearch);
-      }
-      if (blockedMalware) {
-        this.setCapabilityValue("blocked_malware",blockedMalware);
+        if (blockedFilters) {
+          this.setCapabilityValue("blocked_filtering",blockedFilters);
+        }
+        if (blockedAdult) {
+          this.setCapabilityValue("blocked_adult",blockedAdult);
+        }
+        if (blockedSafeSearch) {
+          this.setCapabilityValue("blocked_safesearch",blockedSafeSearch);
+        }
+        if (blockedMalware) {
+          this.setCapabilityValue("blocked_malware",blockedMalware);
+        }
+      } catch (error) {
+        this.error('Error polling AdGuard Home stats:', error.message);
       }
     } catch (error) {
-      this.error('Error polling AdGuard Home stats:', error.message);
+      this.error('Error in pollAdguard:', error.message);
     }
   }
 
@@ -153,6 +157,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
    */
   async onDeleted() {
     this.log('MyDevice has been deleted');
+    this.homey.clearInterval(this.pollingInterval);
   }
 
 };
