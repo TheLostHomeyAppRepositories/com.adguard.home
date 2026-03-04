@@ -16,6 +16,10 @@
         <label class="homey-form-label" for="ip" data-i18n="pair.ip">IP Address</label>
         <input class="homey-form-input" id="ip" type="text" value="" />
       </div>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="port" data-i18n="pair.port">Port</label>
+        <input class="homey-form-input" id="port" type="number" min="1" max="65535" value="" />
+      </div>
     </fieldset>
 
     <p class="error" id="failed" style="display: none;" data-i18n="pair.failed">Server unreachable</p>
@@ -23,6 +27,7 @@
     <button id="save" class="homey-button-primary-full" data-i18n="pair.save">Save</button>
     <script type="text/javascript">
       const ipElement = document.getElementById('ip');
+      const portElement = document.getElementById('port');
       const errorElement = document.getElementById('failed');
       const saveElement = document.getElementById('save');
       const noInputElement = document.getElementById('noinput');
@@ -31,12 +36,16 @@
           errorElement.style.display = 'none';
           noInputElement.style.display = 'none';
           const ip = ipElement.value;
+          const port = portElement.value;
           if (!ip) {
             noInputElement.style.display = 'block';
             setSave();
             return;
           }
-          Homey.emit("ip", { ip: ip  }).then(function (result) {
+          if (!port) {
+            port = 80;
+          }
+          Homey.emit("ip", { ip: ip, port: port  }).then(function (result) {
             if (result === false) {
               errorElement.style.display = 'block';
               setSave();

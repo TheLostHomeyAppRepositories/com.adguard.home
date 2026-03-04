@@ -9,7 +9,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this.log('MyDevice has been initialized');
+    this.log('AdGuard Home device has been initialized');
     this.registerCapabilityListener('protection', async (value) => {
       if (value === true) {
         await this.setProtection(true);
@@ -17,6 +17,9 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
         await this.setProtection(false);
       }
     });
+    if (!this.getStoreValue('baseUrl')) {
+      this.setStoreValue('baseUrl', `http://${this.getStoreValue('ip')}`);
+    }
     const conditionCard = this.homey.flow.getConditionCard('protection_condition');
     conditionCard.registerRunListener(async (args, state) => {
       return await this.getCapabilityValue('protection');
@@ -38,13 +41,13 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
   }
 
   async setProtection(enable) {
-    const ip = this.getStoreValue('ip');
+    const baseUrl = this.getStoreValue('baseUrl');
     const user = this.getStoreValue('user');
     const pass = this.getStoreValue('pass');
     const basicAuth = Buffer.from(`${user}:${pass}`).toString('base64');
     
     try {
-      await axios.post(`http://${ip}/control/protection`, {
+      await axios.post(`${baseUrl}/control/protection`, {
         enabled: enable,
         duration: null
       }, {
@@ -61,18 +64,17 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
 
   async pollAdguard() {
     try {
-      const ip = this.getStoreValue('ip');
+      const baseUrl = this.getStoreValue('baseUrl');
       const user = this.getStoreValue('user');
       const pass = this.getStoreValue('pass');
       const basicAuth = Buffer.from(`${user}:${pass}`).toString(`base64`);
       try {
-        const response = await axios.get(`http://${ip}/control/status`, {
+        const response = await axios.get(`${baseUrl}/control/status`, {
           headers: {
             'Authorization': `Basic ${basicAuth}`
           }
         });
         const isEnabled = response.data.protection_enabled;
-        this.log('Polled protection status:', isEnabled);
         if (this._firstRunCompleted === true) {
           if (this._oldProtectionStatus !== isEnabled) {
             if (isEnabled) {
@@ -83,14 +85,13 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
           }
         }
         this._oldProtectionStatus = isEnabled;
-        this.log('Setting protection capability to:', isEnabled);
         this.setCapabilityValue("protection", isEnabled);
         this._firstRunCompleted = true;
       } catch (error) {
         this.error('Error polling AdGuard Home:', error.message);
       }
       try {
-        const response = await axios.get(`http://${ip}/control/stats`, {
+        const response = await axios.get(`${baseUrl}/control/stats`, {
           headers: {
             'Authorization': `Basic ${basicAuth}`
           }
@@ -128,7 +129,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.log('AdGuard Home device has been added');
   }
 
   /**
@@ -140,7 +141,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('MyDevice settings where changed');
+    this.log('AdGuard Home device settings where changed');
   }
 
   /**
@@ -149,14 +150,14 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('MyDevice was renamed');
+    this.log('AdGuard Home device was renamed');
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.log('AdGuard Home device has been deleted');
     this.homey.clearInterval(this.pollingInterval);
   }
 

@@ -21,10 +21,17 @@ module.exports = class AdGuardHomeDriver extends Homey.Driver {
     session.setHandler("ip", async (data) => {
       try {
         this.log('Checking IP address:', data.ip);
-        const response = await axios.get(`http://${data.ip}/assets/favicon.png`);
+        let url;
+        if (data.port) {
+          url = `http://${data.ip}:${data.port}/assets/favicon.png`;
+        } else {
+          url = `http://${data.ip}/assets/favicon.png`;
+        }
+        const response = await axios.get(url, { timeout: 5000 });
         this.log(response.headers['content-length'])
         if (Number(response.headers['content-length']) === 1296) {
           this._ip = data.ip;
+          this._port = data.port || 80;
           await session.showView('login');
           return true;
         } else {
@@ -44,12 +51,19 @@ module.exports = class AdGuardHomeDriver extends Homey.Driver {
         this.log('With password:', data.pass);
         const basicAuth = Buffer.from(`${data.user}:${data.pass}`).toString('base64');
         this.log('Using Basic Auth:', basicAuth);
-        const response = await axios.get(`http://${ip}/control/stats`, {
+        let url;
+        if (this._port !== 80) {
+          url = `http://${ip}:${this._port}/control/stats`;
+        } else {
+          url = `http://${ip}/control/stats`;
+        }
+        const response = await axios.get(url, {
           headers: {
             'Authorization': `Basic ${basicAuth}`
           }
         });
-        return { ip: ip, user: data.user, pass: data.pass };
+        const baseUrl = url.replace('/control/stats', '');
+        return { ip: ip, baseUrl: baseUrl, user: data.user, pass: data.pass };
       } catch (error) {
         if (error.response?.status === 401) {
           this.error('Authentication failed:', error.message);
