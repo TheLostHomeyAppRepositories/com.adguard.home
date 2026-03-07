@@ -22,5 +22,8 @@
   },
   "1.1.0": {
     "en": "Added support for setting a custom port"
+  },
+  "1.1.1": {
+    "en": "Improved pairing views"
   }
 }
