@@ -32,72 +32,76 @@
       const noUserElement = document.getElementById('nouser');
       const noPasswordElement = document.getElementById('nopassword');
       const saveBtn = document.getElementById('savebtn');
-        saveBtn.addEventListener("click", function (e) {
-          console.log("Save button clicked");
-          failedElement.style.display = 'none';
-          noUserElement.style.display = 'none';
-          noPasswordElement.style.display = 'none';
-          if (!userElement.value) {
-            noUserElement.style.display = 'block';
-            setSave();
-            return;
-          }
-          if (!passwordElement.value) {
-            noPasswordElement.style.display = 'block';
-            setSave();
-            return;
-          }
-          console.log("Emitting login event");
-          setSaving();
-          const user = userElement.value;
-          const pass = passwordElement.value;
-          Homey.emit("login", { user: user, pass: pass }).then(function (result) {
-            if (result === false) {
-              failedElement.style.display = 'block';
-              setSave();
-            } else {
-              Homey.addDevice({
-                data: {
-                  "ip": result.ip,
-                },
-                store: {
-                  "ip": result.ip,
-                  "user": result.user,
-                  "pass": result.pass,
-                  "baseUrl": result.baseUrl
-                },
-                name: result.ip
-              }, (err, result) => {
-                if (err) {
-                  console.error(err);
-                  if (err.message && err.message.includes('already added')) {
-                    saveBtn.className = 'homey-button-primary-full';
-                    saveBtn.textContent = 'Login';
-                    duplicatedevice.style.display = 'block';
-                  } else {
-                    saveBtn.className = 'homey-button-primary-full';
-                    saveBtn.textContent = 'Login';
-                    unexpectederror.style.display = 'block';
-                  }
-                  return;
-                }
-                Homey.done();
-              });
-            }
-          });
-        }).catch(function (error) {
-          console.error("Error during login event:", error);
+      saveBtn.addEventListener("click", function (e) {
+        console.log("Save button clicked");
+        failedElement.style.display = 'none';
+        noUserElement.style.display = 'none';
+        noPasswordElement.style.display = 'none';
+        if (!userElement.value) {
+          noUserElement.style.display = 'block';
           setSave();
+          return;
+        }
+        if (!passwordElement.value) {
+          noPasswordElement.style.display = 'block';
+          setSave();
+          return;
+        }
+        console.log("Emitting login event");
+        setSaving();
+        const user = userElement.value;
+        const pass = passwordElement.value;
+        Homey.emit("login", { user: user, pass: pass }).then(function (result) {
+          if (result === false) {
+            failedElement.style.display = 'block';
+            setSave();
+          } else {
+            Homey.addDevice({
+              data: {
+                "ip": result.ip,
+              },
+              store: {
+                "ip": result.ip,
+                "user": result.user,
+                "pass": result.pass,
+                "baseUrl": result.baseUrl
+              },
+              name: result.ip
+            }, (err, result) => {
+              if (err) {
+                console.error(err);
+                if (err.message && err.message.includes('already added')) {
+                  saveBtn.className = 'homey-button-primary-full';
+                  saveBtn.textContent = 'Login';
+                  duplicatedevice.style.display = 'block';
+                } else {
+                  saveBtn.className = 'homey-button-primary-full';
+                  saveBtn.textContent = 'Login';
+                  unexpectederror.style.display = 'block';
+                }
+                return;
+              }
+              Homey.done();
+            });
+          }
         });
-        function setSave() {
-          saveBtn.className = 'homey-button-primary-full';
-          saveBtn.textContent = Homey.__('pair.save');
-        }
+      }).catch(function (error) {
+        console.error("Error during login event:", error);
+        setSave();
+      });
+      function setSave() {
+        saveBtn.className = 'homey-button-primary-full';
+        saveBtn.textContent = Homey.__('pair.save');
+        userElement.disabled = false;
+        passwordElement.disabled = false;
+      }
 
-        function setSaving() {
-          saveBtn.className = 'homey-button-primary-full is-loading';
-          saveBtn.textContent = Homey.__('pair.saving');
-        }
+      function setSaving() {
+        saveBtn.className = 'homey-button-primary-full is-loading';
+        saveBtn.textContent = Homey.__('pair.saving');
+        userElement.disabled = true;
+        passwordElement.disabled = true;
+      }
     </script>
   </body>
 </html>

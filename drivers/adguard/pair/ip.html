@@ -31,36 +31,40 @@
       const errorElement = document.getElementById('failed');
       const saveElement = document.getElementById('save');
       const noInputElement = document.getElementById('noinput');
-        saveElement.addEventListener("click", function (e) {
-          setSaving();
-          errorElement.style.display = 'none';
-          noInputElement.style.display = 'none';
-          const ip = ipElement.value;
-          const port = portElement.value;
-          if (!ip) {
-            noInputElement.style.display = 'block';
+      saveElement.addEventListener("click", function (e) {
+        setSaving();
+        errorElement.style.display = 'none';
+        noInputElement.style.display = 'none';
+        const ip = ipElement.value;
+        const port = portElement.value;
+        if (!ip) {
+          noInputElement.style.display = 'block';
+          setSave();
+          return;
+        }
+        if (!port) {
+          port = 80;
+        }
+        Homey.emit("ip", { ip: ip, port: port  }).then(function (result) {
+          if (result === false) {
+            errorElement.style.display = 'block';
             setSave();
-            return;
           }
-          if (!port) {
-            port = 80;
-          }
-          Homey.emit("ip", { ip: ip, port: port  }).then(function (result) {
-            if (result === false) {
-              errorElement.style.display = 'block';
-              setSave();
-            }
-          });
         });
-        function setSave() {
-          saveElement.className = 'homey-button-primary-full';
-          saveElement.textContent = Homey.__('pair.save');
-        }
+      });
+      function setSave() {
+        saveElement.className = 'homey-button-primary-full';
+        saveElement.textContent = Homey.__('pair.save');
+        ipElement.disabled = false;
+        portElement.disabled = false;
+      }
 
-        function setSaving() {
-          saveElement.className = 'homey-button-primary-full is-loading';
-          saveElement.textContent = Homey.__('pair.saving');
-        }
+      function setSaving() {
+        saveElement.className = 'homey-button-primary-full is-loading';
+        saveElement.textContent = Homey.__('pair.saving');
+        ipElement.disabled = true;
+        portElement.disabled = true;
+      }
     </script>
   </body>
 </html>
