@@ -18,7 +18,7 @@
       </div>
       <div class="homey-form-group">
         <label class="homey-form-label" for="port" data-i18n="pair.port">Port</label>
-        <input class="homey-form-input" id="port" type="number" min="1" max="65535" value="" />
+        <input class="homey-form-input" id="port" type="number" min="1" max="65535" placeholder="80" value="" />
       </div>
     </fieldset>
 
@@ -36,13 +36,13 @@
         errorElement.style.display = 'none';
         noInputElement.style.display = 'none';
         const ip = ipElement.value;
-        const port = portElement.value;
+        let port = portElement.value;
         if (!ip) {
           noInputElement.style.display = 'block';
           setSave();
           return;
         }
-        if (!port) {
+        if (!port || port < 1 || port > 65535) {
           port = 80;
         }
         Homey.emit("ip", { ip: ip, port: port  }).then(function (result) {
