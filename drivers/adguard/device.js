@@ -2,6 +2,8 @@
 
 const Homey = require('homey');
 const axios = require('axios');
+const http = require('http');
+
 
 module.exports = class AdGuardHomeDevice extends Homey.Device {
 
@@ -9,6 +11,28 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    this._httpAgent = new http.Agent({
+      keepAlive: true,
+      keepAliveMsecs: 10000,
+      maxSockets: 10,
+      maxFreeSockets: 4,
+      timeout: 15000,
+    });
+    if (!this.getStoreValue('baseUrl')) {
+      this.setStoreValue('baseUrl', `http://${this.getStoreValue('ip')}`);
+    }
+    try {
+      const baseUrl = this.getStoreValue('baseUrl');
+      this._apiClient = axios.create({
+        baseURL: baseUrl,
+        httpAgent: this._httpAgent,
+        timeout: 10000,
+      });
+    } catch (error) {
+      this.error('Error initializing HTTP client:', error.message);
+      this.setUnavailable();
+      return;
+    }
     this.log('AdGuard Home device has been initialized');
     this.registerCapabilityListener('protection', async (value) => {
       if (value === true) {
@@ -17,9 +41,6 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
         await this.setProtection(false);
       }
     });
-    if (!this.getStoreValue('baseUrl')) {
-      this.setStoreValue('baseUrl', `http://${this.getStoreValue('ip')}`);
-    }
     const conditionCard = this.homey.flow.getConditionCard('protection_condition');
     conditionCard.registerRunListener(async (args, state) => {
       return await this.getCapabilityValue('protection');
@@ -34,9 +55,9 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
       await this.setProtection(false);
       return true;
     });
-    this.homey.setInterval(() => {
+    this.pollingInterval = this.homey.setInterval(() => {
       this.pollAdguard();
-    }, 4000);
+    }, 5000);
     this.pollAdguard();
   }
 
@@ -47,7 +68,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
     const basicAuth = Buffer.from(`${user}:${pass}`).toString('base64');
     
     try {
-      await axios.post(`${baseUrl}/control/protection`, {
+      await this._apiClient.post(`/control/protection`, {
         enabled: enable,
         duration: null
       }, {
@@ -55,10 +76,10 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
           'Authorization': `Basic ${basicAuth}`
         }
       });
-      this.log(`Protection ${enable}d successfully`);
+      this.log(`Protection ${enable ? "enable" : "disable"}d successfully`);
     } catch (error) {
-      this.error(`Error trying to ${enable} protection:`, error.message);
-      throw new Error(`Failed to ${enable} protection`);
+      this.error(`Error trying to ${enable ? "enable" : "disable"} protection:`, error.message);
+      throw new Error(`Failed to ${enable ? "enable" : "disable"} protection`);
     }
   }
 
@@ -69,7 +90,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
       const pass = this.getStoreValue('pass');
       const basicAuth = Buffer.from(`${user}:${pass}`).toString(`base64`);
       try {
-        const response = await axios.get(`${baseUrl}/control/status`, {
+        const response = await this._apiClient.get(`/control/status`, {
           headers: {
             'Authorization': `Basic ${basicAuth}`
           }
@@ -91,7 +112,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
         this.error('Error polling AdGuard Home:', error.message);
       }
       try {
-        const response = await axios.get(`${baseUrl}/control/stats`, {
+        const response = await this._apiClient.get(`/control/stats`, {
           headers: {
             'Authorization': `Basic ${basicAuth}`
           }
