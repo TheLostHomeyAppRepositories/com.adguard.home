@@ -33,6 +33,9 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
       this.setUnavailable();
       return;
     }
+    const user = this.getStoreValue('user');
+    const pass = this.getStoreValue('pass');
+    this._basicAuth = Buffer.from(`${user}:${pass}`).toString('base64');
     this.log('AdGuard Home device has been initialized');
     this.registerCapabilityListener('protection', async (value) => {
       if (value === true) {
@@ -62,10 +65,6 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
   }
 
   async setProtection(enable) {
-    const baseUrl = this.getStoreValue('baseUrl');
-    const user = this.getStoreValue('user');
-    const pass = this.getStoreValue('pass');
-    const basicAuth = Buffer.from(`${user}:${pass}`).toString('base64');
     
     try {
       await this._apiClient.post(`/control/protection`, {
@@ -73,7 +72,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
         duration: null
       }, {
         headers: {
-          'Authorization': `Basic ${basicAuth}`
+          'Authorization': `Basic ${this._basicAuth}`
         }
       });
       this.log(`Protection ${enable ? "enable" : "disable"}d successfully`);
@@ -85,14 +84,10 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
 
   async pollAdguard() {
     try {
-      const baseUrl = this.getStoreValue('baseUrl');
-      const user = this.getStoreValue('user');
-      const pass = this.getStoreValue('pass');
-      const basicAuth = Buffer.from(`${user}:${pass}`).toString(`base64`);
       try {
         const response = await this._apiClient.get(`/control/status`, {
           headers: {
-            'Authorization': `Basic ${basicAuth}`
+            'Authorization': `Basic ${this._basicAuth}`
           }
         });
         const isEnabled = response.data.protection_enabled;
@@ -114,7 +109,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
       try {
         const response = await this._apiClient.get(`/control/stats`, {
           headers: {
-            'Authorization': `Basic ${basicAuth}`
+            'Authorization': `Basic ${this._basicAuth}`
           }
         });
         const data = response.data;
