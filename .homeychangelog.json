@@ -28,5 +28,8 @@
   },
   "1.1.2": {
     "en": "Fixed pairing views"
+  },
+  "1.2.0": {
+    "en": "Makes polling less intensive for the network, fixed crash issue and reduced polling from 4s to 5s"
   }
 }
