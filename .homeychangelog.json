@@ -31,5 +31,8 @@
   },
   "1.2.0": {
     "en": "Makes polling less intensive for the network, fixed crash issue and reduced polling from 4s to 5s"
+  },
+  "1.2.1": {
+    "en": "Fixed minor performance issue"
   }
 }
