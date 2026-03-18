@@ -34,5 +34,8 @@
   },
   "1.2.1": {
     "en": "Fixed minor performance issue"
+  },
+  "1.2.2": {
+    "en": "Added telemetry"
   }
 }
