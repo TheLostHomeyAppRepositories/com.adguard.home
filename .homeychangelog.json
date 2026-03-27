@@ -37,5 +37,8 @@
   },
   "1.2.2": {
     "en": "Added telemetry"
+  },
+  "1.2.3": {
+    "en": "Update dependencies"
   }
 }
