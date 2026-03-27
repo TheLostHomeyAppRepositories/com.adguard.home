@@ -33,7 +33,6 @@
       const noPasswordElement = document.getElementById('nopassword');
       const saveBtn = document.getElementById('savebtn');
       saveBtn.addEventListener("click", function (e) {
-        console.log("Save button clicked");
         failedElement.style.display = 'none';
         noUserElement.style.display = 'none';
         noPasswordElement.style.display = 'none';
@@ -47,7 +46,6 @@
           setSave();
           return;
         }
-        console.log("Emitting login event");
         setSaving();
         const user = userElement.value;
         const pass = passwordElement.value;
