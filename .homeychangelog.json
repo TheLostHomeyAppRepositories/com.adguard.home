@@ -61,5 +61,8 @@
   },
   "1.2.10": {
     "en": "Update dependencies"
+  },
+  "1.2.11": {
+    "en": "Update dependencies and fixed device class"
   }
 }
