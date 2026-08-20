@@ -2,7 +2,7 @@
   "name": {
     "en": "AdGuard Home"
   },
-  "class": "other",
+  "class": "service",
   "capabilities": [
     "protection",
     "total_queries",
