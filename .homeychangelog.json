@@ -64,5 +64,8 @@
   },
   "1.2.11": {
     "en": "Update dependencies and fixed device class"
+  },
+  "1.2.12": {
+    "en": "Fixed crash issue, added quick action for filtering, added available status"
   }
 }
