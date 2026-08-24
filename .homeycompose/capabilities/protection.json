@@ -7,6 +7,6 @@
   "getable": true,
   "setable": true,
   "uiComponent": "button",
-  "uiQuickAction": false,
+  "uiQuickAction": true,
   "icon": "/assets/protection.svg"
 }

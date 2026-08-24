@@ -65,7 +65,6 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
   }
 
   async setProtection(enable) {
-    
     try {
       await this._apiClient.post(`/control/protection`, {
         enabled: enable,
@@ -90,6 +89,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
             'Authorization': `Basic ${this._basicAuth}`
           }
         });
+        await this.setAvailable();
         const isEnabled = response.data.protection_enabled;
         if (this._firstRunCompleted === true) {
           if (this._oldProtectionStatus !== isEnabled) {
@@ -100,8 +100,10 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
             }
           }
         }
-        this._oldProtectionStatus = isEnabled;
-        this.setCapabilityValue("protection", isEnabled);
+        if (this._oldProtectionStatus !== undefined) {
+          this._oldProtectionStatus = isEnabled;
+        }
+        await this.setCapabilityValue("protection", isEnabled);
         this._firstRunCompleted = true;
       } catch (error) {
         this.error('Error polling AdGuard Home:', error.message);
@@ -138,6 +140,7 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
       }
     } catch (error) {
       this.error('Error in pollAdguard:', error.message);
+      await this.setUnavailable("Could not connect to AdGuard Home");
     }
   }
 

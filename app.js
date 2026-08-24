@@ -3,14 +3,13 @@
 const Homey = require('homey');
 const axios = require('axios');
 
-module.exports = class MyApp extends Homey.App {
+module.exports = class AdguardHomeApp extends Homey.App {
 
   /**
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log('MyApp has been initialized');
-    // generate ID, random UUID
+    this.log('AdGuard Home app has been initialized');
     try {
       const { randomUUID } = require('crypto');
       let id = this.homey.settings.get('id');
