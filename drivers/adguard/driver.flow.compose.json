@@ -73,6 +73,20 @@
         "en": "Disable filtering",
         "nl": "Filtering uitschakelen"
       }
+    },
+    {
+      "id": "update_blocklists",
+      "title": {
+        "en": "Update blocklists",
+        "nl": "Blocklists bijwerken"
+      }
+    },
+    {
+      "id": "update_whitelists",
+      "title": {
+        "en": "Update whitelists",
+        "nl": "Whitelists bijwerken"
+      }
     }
   ]
 }

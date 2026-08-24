@@ -58,6 +58,16 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
       await this.setProtection(false);
       return true;
     });
+    const updateBlocklistsCard = this.homey.flow.getActionCard('update_blocklists');
+    updateBlocklistsCard.registerRunListener(async (args, state) => {
+      await this.updateLists(false);
+      return true;
+    });
+    const updateWhitelistsCard = this.homey.flow.getActionCard('update_whitelists');
+    updateWhitelistsCard.registerRunListener(async (args, state) => {
+      await this.updateLists(true);
+      return true;
+    });
     this.pollingInterval = this.homey.setInterval(() => {
       this.pollAdguard();
     }, 5000);
@@ -78,6 +88,22 @@ module.exports = class AdGuardHomeDevice extends Homey.Device {
     } catch (error) {
       this.error(`Error trying to ${enable ? "enable" : "disable"} protection:`, error.message);
       throw new Error(`Failed to ${enable ? "enable" : "disable"} protection`);
+    }
+  }
+
+  async updateLists(whitelist) {
+    try {
+      await this._apiClient.post(`/control/filtering/refresh`, {
+        whitelist
+      }, {
+        headers: {
+          'Authorization': `Basic ${this._basicAuth}`
+        }
+      });
+      this.log("Lists updated!");
+    } catch (error) {
+      this.error(`Error updating lists:`, error.message);
+      throw new Error(`Failed to update lists`);
     }
   }
 

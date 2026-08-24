@@ -178,6 +178,34 @@
             "filter": "driver_id=adguard"
           }
         ]
+      },
+      {
+        "id": "update_blocklists",
+        "title": {
+          "en": "Update blocklists",
+          "nl": "Blocklists bijwerken"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
+      },
+      {
+        "id": "update_whitelists",
+        "title": {
+          "en": "Update whitelists",
+          "nl": "Whitelists bijwerken"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=adguard"
+          }
+        ]
       }
     ]
   },
